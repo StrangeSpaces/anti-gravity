@@ -1,0 +1,19 @@
+extern var Graphics;
+extern var Core;
+
+func main() {
+    var a = Graphics.new_image();
+
+    while (true) {
+        while (true) {
+            var e = Core.get_event();
+            if (e === null) {
+                break;
+            } else if (e === "quit") {
+                return;
+            }
+        }
+
+        Graphics.draw(a);
+    }
+}

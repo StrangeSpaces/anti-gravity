@@ -2,16 +2,36 @@
 #include "gravity_macros.h"
 #include "gravity_vmmacros.h"
 
-SDL_Window* Window = NULL;
-SDL_Surface* ScreenSurface = NULL;
-
+SDL_Window *Window = NULL;
+SDL_Renderer *Renderer = NULL;
 
 gravity_class_t *image;
 bool new_image (gravity_vm *vm, gravity_value_t *args, uint16_t nargs, uint32_t rindex) 
 {
+    if (nargs != 2 || !VALUE_ISA_STRING(args[1]))
+        RETURN_ERROR("First argument must be a String.");
+
     gravity_instance_t *i = gravity_instance_new(vm, image);
 
-    i->xdata = SDL_LoadBMP( "test.bmp" );
+    i->xdata = IMG_LoadTexture(Renderer, VALUE_AS_CSTRING(args[1]));
+
+    RETURN_VALUE(VALUE_FROM_OBJECT(i), rindex);
+}
+
+gravity_class_t *quad;
+bool new_quad (gravity_vm *vm, gravity_value_t *args, uint16_t nargs, uint32_t rindex) 
+{
+    if (nargs < 5)
+        RETURN_ERROR("Four arguments are needed to make a Quad.");
+
+    gravity_instance_t *i = gravity_instance_new(vm, quad);
+
+    SDL_Rect *rect = malloc(sizeof(SDL_Rect));
+    rect->x = VALUE_AS_INT(args[1]);
+    rect->y = VALUE_AS_INT(args[2]);
+    rect->w = VALUE_AS_INT(args[3]);
+    rect->h = VALUE_AS_INT(args[4]);
+    i->xdata = rect;
 
     RETURN_VALUE(VALUE_FROM_OBJECT(i), rindex);
 }
@@ -19,15 +39,40 @@ bool new_image (gravity_vm *vm, gravity_value_t *args, uint16_t nargs, uint32_t 
 bool draw (gravity_vm *vm, gravity_value_t *args, uint16_t nargs, uint32_t rindex) 
 {
     gravity_instance_t *i = VALUE_AS_INSTANCE(args[1]);
+    
+    int w,h;
+    SDL_QueryTexture(i->xdata, NULL, NULL, &w, &h);
+    SDL_Rect dest = {.x = 0, .y = 0, .w = w, .h = h};
 
-    // bool draw
-    SDL_BlitSurface(i->xdata, NULL, ScreenSurface, NULL);
-                
-    //Update the surface
-    SDL_UpdateWindowSurface(Window);
+    SDL_RenderCopy(Renderer, i->xdata, NULL, &dest);
 
-    //Wait two seconds
-    // SDL_Delay(2000);
+    RETURN_VALUE(VALUE_FROM_NULL, rindex);
+}
+
+bool drawq (gravity_vm *vm, gravity_value_t *args, uint16_t nargs, uint32_t rindex) 
+{
+    int x = nargs >= 4 ? VALUE_AS_INT(args[3]) : 0;
+    int y = nargs >= 5 ? VALUE_AS_INT(args[4]) : 0;
+    int angle = nargs >= 6 ? VALUE_AS_INT(args[4]) : 0;
+
+    SDL_Rect *src = VALUE_AS_INSTANCE(args[2])->xdata;
+    SDL_Rect dest = {.x = x, .y = y, .w = src->w, .h = src->h};
+
+    SDL_RenderCopyEx(Renderer, VALUE_AS_INSTANCE(args[1])->xdata, src, &dest, angle, NULL, SDL_FLIP_NONE);
+
+    RETURN_VALUE(VALUE_FROM_NULL, rindex);
+}
+
+bool clear (gravity_vm *vm, gravity_value_t *args, uint16_t nargs, uint32_t rindex) 
+{
+    SDL_RenderClear(Renderer);
+
+    RETURN_VALUE(VALUE_FROM_NULL, rindex);
+}
+
+bool render (gravity_vm *vm, gravity_value_t *args, uint16_t nargs, uint32_t rindex) 
+{
+    SDL_RenderPresent(Renderer);
 
     RETURN_VALUE(VALUE_FROM_NULL, rindex);
 }
@@ -51,20 +96,24 @@ bool graphics_init(gravity_vm *vm)
         }
         else
         {
-            //Get window surface
-            ScreenSurface = SDL_GetWindowSurface( Window );
+            Renderer = SDL_CreateRenderer(Window, -1, SDL_RENDERER_ACCELERATED);
         }
     }
 
     gravity_class_t *graphics = gravity_class_new_pair (vm, "Graphics", NULL, 0, 0);
 
     gravity_class_bind(gravity_class_get_meta(graphics), "new_image", NEW_CLOSURE_VALUE(new_image));
+    gravity_class_bind(gravity_class_get_meta(graphics), "new_quad", NEW_CLOSURE_VALUE(new_quad));
     gravity_class_bind(gravity_class_get_meta(graphics), "draw", NEW_CLOSURE_VALUE(draw));
+    gravity_class_bind(gravity_class_get_meta(graphics), "drawq", NEW_CLOSURE_VALUE(drawq));
+    gravity_class_bind(gravity_class_get_meta(graphics), "clear", NEW_CLOSURE_VALUE(clear));
+    gravity_class_bind(gravity_class_get_meta(graphics), "render", NEW_CLOSURE_VALUE(render));
 
     // Register class inside VM
     gravity_vm_setvalue(vm, "Graphics", VALUE_FROM_OBJECT(graphics));
 
     image = gravity_class_new_pair (vm, "Image", NULL, 0, 0);
+    quad = gravity_class_new_pair (vm, "Quad", NULL, 0, 0);
 
     return true;
 }

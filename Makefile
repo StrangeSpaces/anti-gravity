@@ -9,21 +9,21 @@ CFLAGS = $(INCLUDE) -O2 -std=gnu99 -fgnu89-inline
 
 ifeq ($(OS),Windows_NT)
 	# Windows
-	LDFLAGS = -lm -lShlwapi -lgravity -lsdl2
+	LDFLAGS = -lm -lShlwapi -lgravity -lsdl2 -lsdl2_image
 else
 	UNAME_S := $(shell uname -s)
 	ifeq ($(UNAME_S),Darwin)
 		# MacOS
-		LDFLAGS = -lm -lgravity -lsdl2
+		LDFLAGS = -lm -lgravity -lsdl2 -lsdl2_image
 	else ifeq ($(UNAME_S),NetBSD)
 		# NetBSD
-		LDFLAGS = -lm -lgravity -lsdl
+		LDFLAGS = -lm -lgravity -lsdl -lsdl2_image
 	else ifeq ($(UNAME_S),OpenBSD)
 		# OpenBSD
-		LDFLAGS = -lm -lgravity -lsdl
+		LDFLAGS = -lm -lgravity -lsdl -lsdl2_image
 	else
 		# Linux
-		LDFLAGS = -lm -lrt -lgravity -lsdl
+		LDFLAGS = -lm -lrt -lgravity -lsdl -lsdl2_image
 	endif
 endif
 

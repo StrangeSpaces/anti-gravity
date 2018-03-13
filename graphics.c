@@ -58,12 +58,10 @@ bool drawq (gravity_vm *vm, gravity_value_t *args, uint16_t nargs, uint32_t rind
     double scale_y = nargs >= 8 ? VALUE_AS_FLOAT(args[7]) : 1;
 
     SDL_RendererFlip flip = 0;
-    if (scale_x < 0) {
+    if (scale_x < 0)
         flip |= SDL_FLIP_HORIZONTAL;
-    }
-    if (scale_y < 0) {
+    if (scale_y < 0)
         flip |= SDL_FLIP_VERTICAL;
-    }
 
     SDL_Rect *src = VALUE_AS_INSTANCE(args[2])->xdata;
     SDL_Rect dest = {.x = x, .y = y, .w = src->w * fabs(scale_x), .h = src->h * fabs(scale_y)};

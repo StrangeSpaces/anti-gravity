@@ -1,6 +1,7 @@
 extern var Graphics;
 extern var Core;
 extern var Timer;
+extern var Keyboard;
 
 var a;
 var quad;
@@ -39,7 +40,11 @@ func draw() {
 }
 
 func update(dt) {
-    x += dt * 60;
+    if (Keyboard.is_down("d")) {
+        x += dt * 60;
+    } else if (Keyboard.is_down("a")) {
+        x -= dt * 60;
+    }
 }
 
 func main() {

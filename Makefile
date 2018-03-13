@@ -2,7 +2,7 @@ COMPILER_DIR = ../lang/src/compiler/
 RUNTIME_DIR = ../lang/src/runtime/
 SHARED_DIR = ../lang/src/shared/
 UTILS_DIR = ../lang/src/utils/
-ENGINE_SRC = main.c graphics.c core.c timer.c
+ENGINE_SRC = main.c graphics.c core.c timer.c keyboard.c
 
 INCLUDE = -I$(COMPILER_DIR) -I$(RUNTIME_DIR) -I$(SHARED_DIR) -I$(UTILS_DIR)
 CFLAGS = $(INCLUDE) -O3 -std=gnu99 -fgnu89-inline

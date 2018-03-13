@@ -53,12 +53,22 @@ bool drawq (gravity_vm *vm, gravity_value_t *args, uint16_t nargs, uint32_t rind
 {
     int x = nargs >= 4 ? VALUE_AS_INT(args[3]) : 0;
     int y = nargs >= 5 ? VALUE_AS_INT(args[4]) : 0;
-    int angle = nargs >= 6 ? VALUE_AS_INT(args[4]) : 0;
+    int angle = nargs >= 6 ? VALUE_AS_INT(args[5]) : 0;
+    int scale_x = nargs >= 7 ? VALUE_AS_INT(args[6]) : 1;
+    int scale_y = nargs >= 8 ? VALUE_AS_INT(args[7]) : 1;
+
+    SDL_RendererFlip flip = 0;
+    if (scale_x < 0) {
+        flip |= SDL_FLIP_HORIZONTAL;
+    }
+    if (scale_y < 0) {
+        flip |= SDL_FLIP_VERTICAL;
+    }
 
     SDL_Rect *src = VALUE_AS_INSTANCE(args[2])->xdata;
-    SDL_Rect dest = {.x = x, .y = y, .w = src->w, .h = src->h};
+    SDL_Rect dest = {.x = x, .y = y, .w = src->w * llabs(scale_x), .h = src->h * llabs(scale_y)};
 
-    SDL_RenderCopyEx(Renderer, VALUE_AS_INSTANCE(args[1])->xdata, src, &dest, angle, NULL, SDL_FLIP_NONE);
+    SDL_RenderCopyEx(Renderer, VALUE_AS_INSTANCE(args[1])->xdata, src, &dest, angle, NULL, flip);
 
     RETURN_VALUE(VALUE_FROM_NULL, rindex);
 }

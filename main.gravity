@@ -29,7 +29,7 @@ func load() {
 }
 
 func draw() {
-    Graphics.drawq(a, quad, 100, 100);
+    Graphics.drawq(a, quad, 0, 0);
 }
 
 func main() {

@@ -2,10 +2,10 @@ COMPILER_DIR = ../lang/src/compiler/
 RUNTIME_DIR = ../lang/src/runtime/
 SHARED_DIR = ../lang/src/shared/
 UTILS_DIR = ../lang/src/utils/
-ENGINE_SRC = main.c graphics.c core.c
+ENGINE_SRC = main.c graphics.c core.c timer.c
 
 INCLUDE = -I$(COMPILER_DIR) -I$(RUNTIME_DIR) -I$(SHARED_DIR) -I$(UTILS_DIR)
-CFLAGS = $(INCLUDE) -O2 -std=gnu99 -fgnu89-inline
+CFLAGS = $(INCLUDE) -O3 -std=gnu99 -fgnu89-inline
 
 ifeq ($(OS),Windows_NT)
 	# Windows

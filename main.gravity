@@ -1,11 +1,15 @@
 extern var Graphics;
 extern var Core;
+extern var Timer;
 
 var a;
 var quad;
+var x = 0;
 
 func run() {
     load();
+
+    Timer.step();
 
     while (true) {
         while (true) {
@@ -16,6 +20,8 @@ func run() {
                 return;
             }
         }
+
+        update(Timer.step());
 
         Graphics.clear();
         draw();
@@ -29,7 +35,11 @@ func load() {
 }
 
 func draw() {
-    Graphics.drawq(a, quad, 0, 0);
+    Graphics.drawq(a, quad, x, 0);
+}
+
+func update(dt) {
+    x += dt;
 }
 
 func main() {

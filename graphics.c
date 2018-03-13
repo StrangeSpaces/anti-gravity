@@ -51,11 +51,11 @@ bool draw (gravity_vm *vm, gravity_value_t *args, uint16_t nargs, uint32_t rinde
 
 bool drawq (gravity_vm *vm, gravity_value_t *args, uint16_t nargs, uint32_t rindex) 
 {
-    int x = nargs >= 4 ? VALUE_AS_INT(args[3]) : 0;
-    int y = nargs >= 5 ? VALUE_AS_INT(args[4]) : 0;
-    int angle = nargs >= 6 ? VALUE_AS_INT(args[5]) : 0;
-    int scale_x = nargs >= 7 ? VALUE_AS_INT(args[6]) : 1;
-    int scale_y = nargs >= 8 ? VALUE_AS_INT(args[7]) : 1;
+    double x = nargs >= 4 ? VALUE_AS_FLOAT(args[3]) : 0;
+    double y = nargs >= 5 ? VALUE_AS_FLOAT(args[4]) : 0;
+    double angle = nargs >= 6 ? VALUE_AS_FLOAT(args[5]) : 0;
+    double scale_x = nargs >= 7 ? VALUE_AS_FLOAT(args[6]) : 1;
+    double scale_y = nargs >= 8 ? VALUE_AS_FLOAT(args[7]) : 1;
 
     SDL_RendererFlip flip = 0;
     if (scale_x < 0) {
@@ -66,7 +66,7 @@ bool drawq (gravity_vm *vm, gravity_value_t *args, uint16_t nargs, uint32_t rind
     }
 
     SDL_Rect *src = VALUE_AS_INSTANCE(args[2])->xdata;
-    SDL_Rect dest = {.x = x, .y = y, .w = src->w * llabs(scale_x), .h = src->h * llabs(scale_y)};
+    SDL_Rect dest = {.x = x, .y = y, .w = src->w * fabs(scale_x), .h = src->h * fabs(scale_y)};
 
     SDL_RenderCopyEx(Renderer, VALUE_AS_INSTANCE(args[1])->xdata, src, &dest, angle, NULL, flip);
 
@@ -98,7 +98,7 @@ bool graphics_init(gravity_vm *vm)
     else
     {
         //Create window
-        Window = SDL_CreateWindow( "SDL Tutorial", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, 640, 360, SDL_WINDOW_SHOWN );
+        Window = SDL_CreateWindow( "anti-gravity", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, 640, 360, SDL_WINDOW_SHOWN );
         if( Window == NULL )
         {
             printf( "Window could not be created! SDL_Error: %s\n", SDL_GetError() );

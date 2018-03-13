@@ -1,4 +1,5 @@
 #include "core.h"
+#include "timer.h"
 #include "graphics.h"
 
 static void report_error (error_type_t error_type, const char *message, error_desc_t error_desc, void *xdata) {
@@ -39,6 +40,7 @@ int main(int argc, char const *argv[])
     const char *source_code = file_read("main.gravity", &size);
 
     core_init(vm);
+    timer_init(vm);
     graphics_init(vm);
     gravity_closure_t *closure = gravity_compiler_run(compiler, source_code, size, 0, false);
 

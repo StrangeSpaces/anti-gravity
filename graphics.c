@@ -106,7 +106,8 @@ bool graphics_init(gravity_vm *vm)
         }
         else
         {
-            Renderer = SDL_CreateRenderer(Window, -1, SDL_RENDERER_ACCELERATED);
+            Renderer = SDL_CreateRenderer(Window, -1, SDL_RENDERER_ACCELERATED | SDL_RENDERER_TARGETTEXTURE);
+            SDL_GL_SetSwapInterval(1);
         }
     }
 

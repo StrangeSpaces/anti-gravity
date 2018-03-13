@@ -12,6 +12,8 @@ bool get_event (gravity_vm *vm, gravity_value_t *args, uint16_t nargs, uint32_t 
             RETURN_VALUE(VALUE_FROM_CSTRING(vm, "quit"), rindex);
             break;
         }
+
+        RETURN_VALUE(VALUE_FROM_CSTRING(vm, "empty"), rindex);
     }
     
     RETURN_VALUE(VALUE_FROM_NULL, rindex);

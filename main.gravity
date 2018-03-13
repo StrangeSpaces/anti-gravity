@@ -39,7 +39,7 @@ func draw() {
 }
 
 func update(dt) {
-    x += dt;
+    x += dt * 60;
 }
 
 func main() {
